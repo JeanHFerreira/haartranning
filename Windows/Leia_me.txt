@@ -1,0 +1,5 @@
+***Treinamento ainda incompleto
+
+O backup cria a pasta backup e salva os arquivos positivos, negativos na pasta criada
+clicar no geracao.bat para gerar o treinamento
+o CropAndPaintBlac.jar é o programa para gerar as imagens positivas e negativas a partir de uma única imagem
