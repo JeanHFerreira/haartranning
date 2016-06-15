@@ -1,7 +1,9 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Window;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
 import principal.Evento;
 import principal.Quadrado;
 
@@ -31,7 +34,7 @@ public class FrameToCrop extends JFrame{
 	JLabel lbImagem;
 	PainelButtons painelButton;
 	ImageIcon logo;
-	BufferedImage imagem;
+	BufferedImage imagem, imagemAuxiliar;
 	
 	public FrameToCrop (String nomeArquivo, int quantidadeLote, int numNeg){
 		this.quantidadeLote = quantidadeLote;
@@ -45,7 +48,7 @@ public class FrameToCrop extends JFrame{
 		this.btProxImagem = new JButton("Proxima imagem");
 		this.btAddPositiva = new JButton("Imagem positiva");
 		this.btPaint = new JButton("Pintar");
-		this.btDesfazer = new JButton("Desfazer último");
+		this.btDesfazer = new JButton("Desfazer Ãºltimo");
 		this.lbImagem = new JLabel("");
 		this.setLayout(new BorderLayout());
 		this.painelButton = new PainelButtons();
@@ -98,14 +101,16 @@ public class FrameToCrop extends JFrame{
 	        linha = lerArq.readLine();
 	      }
 	      System.out.println(this.listaArquivos.size() + " arquivos foram obtidos");
-	      if (this.listaArquivos.size()%quantidadeLote!=0){
-	        System.out.println("A quantidade do lote não corresponde a quantidade de arquivos");
-	        this.dispose();
-	      }
-	      this.quantidadeRepeticao = this.listaArquivos.size()/quantidadeLote;
-	      this.eventos = new ArrayList<Evento>(this.quantidadeRepeticao);
-	      
 	      arq.close();
+	      if (this.listaArquivos.size()%quantidadeLote!=0){
+	        System.out.println("A quantidade do lote nÃ£o corresponde a quantidade de arquivos");
+	        System.out.println("O programa serÃ¡ finalizado");
+	        System.exit(0);
+	      }else{
+	        this.quantidadeRepeticao = this.listaArquivos.size()/quantidadeLote;
+	        this.eventos = new ArrayList<Evento>(this.quantidadeRepeticao);
+	        this.abrirImagem();
+	      }
 	    } catch (IOException e) {
 	        System.err.printf("Erro na abertura do arquivo TXT: %s.\n",
 	          e.getMessage());
@@ -113,7 +118,7 @@ public class FrameToCrop extends JFrame{
 	}
 	
 	public void realizarAcoesLote(){
-		System.out.println("Realizando ações do lote");
+		System.out.println("Realizando aÃ§Ãµes do lote");
 		this.x1 = this.x2 = this.y1 = this.y2 = 0;
 		for (int l = 1; l<this.quantidadeLote; l++){
 			for (int i = 0; i<this.eventos.size();i++){
