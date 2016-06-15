@@ -10,10 +10,10 @@ public class CropAndPaintBlack {
 	System.out.println("*****************************************************************");  
 	System.out.println("**  Argumentos:");
 	System.out.println("**  -file nome do arquivo txt. Ex: Imagens.txt");
-	System.out.println("**     obrigatÛrio");
+	System.out.println("**     obrigat√≥rio");
 	System.out.println("**  -lote quantidade de lotes");
 	System.out.println("**     valor default = 1");
-	System.out.println("**     aplica-se para aplicar as mesmas aÁıes em mais imagens");
+	System.out.println("**     aplica-se para aplicar as mesmas a√ß√µes em mais imagens");
 	System.out.println("**  -numNeg quantidade de imagens negativas por imagem");
 	System.out.println("**     valor default = 100");
 	System.out.println("*****************************************************************"); 
@@ -26,7 +26,7 @@ public class CropAndPaintBlack {
 			  args[i].replace("-numNeg", "");
 		  }
 		  if (args[i].equals("-file")){
-			  file = (i+1>=args.length)?"INV¡LIDO":args[i+1];
+			  file = (i+1>=args.length)?"INV√ÅLIDO":args[i+1];
 		  }
 		  if (args[i].equals("-lote")){
 			  try{
@@ -45,15 +45,14 @@ public class CropAndPaintBlack {
 	  }
 	  System.out.println("Arquivo: "+file);
 	  System.out.println("Quantidade de lotes: "+lote);
-	  if (!file.equals("INV¡LIDO") && lote >= 1 && numNeg >= 0){
+	  if (!file.equals("INV√ÅLIDO") && lote >= 1 && numNeg >= 0){
 	    FrameToCrop frame = new FrameToCrop(file,lote,numNeg);
 	    frame.setVisible(true);
-	    frame.abrirImagem();
 	  }else{
-		 System.out.println("A aplicaÁ„o ser· encerrada pois h· argumentos inv·lidos");
+		 System.out.println("A aplica√ß√£o ser√° encerrada pois h√° argumentos inv√°lidos");
 	  }
 	} else{
-	  System.out.println("Argumento 0 (Local txt) neces·rio");
+	  System.out.println("Argumento 0 (Local txt) neces√°rio");
 	}
   }
 }
