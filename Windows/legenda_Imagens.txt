@@ -1,0 +1,5 @@
+A - de 25ºC a 37ºC
+B - de 25ºC a 38ºC
+C - de 25ºC a 39ºC
+D - de 25ºC a 40ºC
+E - de 25ºC a 41ºC
