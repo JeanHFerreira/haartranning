@@ -2,6 +2,11 @@
 
 O backup cria a pasta backup e salva os arquivos positivos, negativos na pasta criada
 clicar no geracao.bat para gerar o treinamento
-o CropAndPaintBlac.jar � o programa para gerar as imagens positivas e negativas a partir de uma �nica imagem
-Colocar as imagens que deseja abrir na Pasta Imagens. O sistema far� o resto.
+o CropAndPaintBlac.jar é o programa para gerar as imagens positivas e negativas a partir de uma única imagem
+  -- Clique com o botão direito seta as variáveis x1 e y1
+  -- Clique com o botão direito segurando a tecla SHIFT seta as variáveis x2 e y2
+  -- É feita a validação das variáveis conforme os valores de x1, x2, y1 e y2
+  -- O lote repete as mesmas ações das imagens anteriores
+     -- Primeiro é feito as ações do primeiro lote, após isso é feito o laço que replica as ações
+Colocar as imagens que deseja abrir na Pasta Imagens. O sistema fará o resto.
 **Remover Leia-me para iniciar o treinamento
