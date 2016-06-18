@@ -153,6 +153,7 @@ public class FrameToCrop extends JFrame{
 	}
 	
 	public void realizarAcoesLote(){
+		this.setVisible(false);
 		System.out.println("Realizando ações do lote");
 		this.x1 = this.x2 = this.y1 = this.y2 = 0;
 		for (int l = 1; l<this.quantidadeLote; l++){
@@ -260,6 +261,14 @@ public class FrameToCrop extends JFrame{
 		  this.y2=this.imagem.getHeight()-9;  
 	  }
 
+	  if (this.x1>this.imagem.getWidth()){
+		  this.x1=this.imagem.getWidth()-10;  
+	  }
+	  
+	  if (this.x2>this.imagem.getWidth()){
+		  this.x2=this.imagem.getWidth()-9;  
+	  }
+	  
      if (this.x1>this.x2){
 		  troca = this.x1;
 		  this.x1 = this.x2;
