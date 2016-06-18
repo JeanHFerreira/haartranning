@@ -1,14 +1,15 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Window;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -26,20 +27,23 @@ public class FrameToCrop extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	
-	ArrayList<String> listaArquivos;
+	ArrayList<String> listaArquivos,arquivoPositivas,arquivoNegativas;
 	ArrayList<Evento> eventos;
 	Evento evento;
 	int indiceArquivo,quantidadeLote,x1,x2,y1,y2,qtdPositiva,qtdNegativa,numNeg,quantidadeRepeticao;
 	JButton btProxImagem, btAddPositiva, btPaint,btDesfazer;
-	JLabel lbImagem;
+	JLabel lbImagem, lbImagemAux;
 	PainelButtons painelButton;
 	ImageIcon logo;
 	BufferedImage imagem, imagemAuxiliar;
 	
 	public FrameToCrop (String nomeArquivo, int quantidadeLote, int numNeg){
+		this.x1 = this.x2 = this.y1 = this.y2 = 0;
+		this.arquivoPositivas = new ArrayList<String>();
+		this.arquivoNegativas = new ArrayList<String>();
+		this.listaArquivos = new ArrayList<String>();
 		this.quantidadeLote = quantidadeLote;
 		this.numNeg = numNeg;
-		this.listaArquivos = new ArrayList<String>();
 		this.indiceArquivo = 0;
 		this.qtdPositiva = 0;
 		this.qtdNegativa = 0;
@@ -48,17 +52,18 @@ public class FrameToCrop extends JFrame{
 		this.btProxImagem = new JButton("Proxima imagem");
 		this.btAddPositiva = new JButton("Imagem positiva");
 		this.btPaint = new JButton("Pintar");
-		this.btDesfazer = new JButton("Desfazer Ãºltimo");
+		this.btDesfazer = new JButton("Desfazer último");
 		this.lbImagem = new JLabel("");
+		this.lbImagemAux = new JLabel("");
 		this.setLayout(new BorderLayout());
 		this.painelButton = new PainelButtons();
 		this.painelButton.add(this.btProxImagem);
 		this.painelButton.add(this.btAddPositiva);
 		this.painelButton.add(this.btPaint);
 		//this.painelButton.add(this.btDesfazer);
-		this.add(BorderLayout.NORTH,this.painelButton);
-		this.add(BorderLayout.CENTER,this.lbImagem);
-		
+		this.add(BorderLayout.CENTER,this.painelButton);
+		this.add(BorderLayout.NORTH,this.lbImagem);
+		this.add(BorderLayout.SOUTH,this.lbImagemAux);
 		this.btProxImagem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	clickBtProximo();
@@ -103,8 +108,8 @@ public class FrameToCrop extends JFrame{
 	      System.out.println(this.listaArquivos.size() + " arquivos foram obtidos");
 	      arq.close();
 	      if (this.listaArquivos.size()%quantidadeLote!=0){
-	        System.out.println("A quantidade do lote nÃ£o corresponde a quantidade de arquivos");
-	        System.out.println("O programa serÃ¡ finalizado");
+	        System.err.println("A quantidade do lote não corresponde a quantidade de arquivos");
+	        System.out.println("O programa será finalizado");
 	        System.exit(0);
 	      }else{
 	        this.quantidadeRepeticao = this.listaArquivos.size()/quantidadeLote;
@@ -114,11 +119,41 @@ public class FrameToCrop extends JFrame{
 	    } catch (IOException e) {
 	        System.err.printf("Erro na abertura do arquivo TXT: %s.\n",
 	          e.getMessage());
+	        System.out.println("O programa será finalizado");
+	        System.exit(0);
 	    }
 	}
 	
+	public void gravarArquivos(){
+		FileWriter gravador;
+		PrintWriter printer;
+		try {
+			gravador = new FileWriter("./positivas.txt");
+			printer = new PrintWriter(gravador);
+			for(int i=0; i<this.arquivoPositivas.size(); i++){
+				printer.printf("%s%n",this.arquivoPositivas.get(i));
+			}
+			gravador.close();
+			System.out.println("Arquivo positivas.txt gerado com sucesso");
+			gravador = new FileWriter("./negativas.txt");
+			printer = new PrintWriter(gravador);
+			for(int i=0; i<this.arquivoNegativas.size(); i++){
+				printer.printf("%s%n",this.arquivoNegativas.get(i));
+			}
+			gravador.close();
+			System.out.println("Arquivo negativas.txt gerado com sucesso");
+		} catch (IOException e) {
+			System.err.printf("Erro ao gravar os arquivos de imagens\nErro:%s.\n",
+	          e.getMessage());
+			System.out.println("O programa será finalizado");
+	        System.exit(0);
+		}
+		
+		
+	}
+	
 	public void realizarAcoesLote(){
-		System.out.println("Realizando aÃ§Ãµes do lote");
+		System.out.println("Realizando ações do lote");
 		this.x1 = this.x2 = this.y1 = this.y2 = 0;
 		for (int l = 1; l<this.quantidadeLote; l++){
 			for (int i = 0; i<this.eventos.size();i++){
@@ -148,6 +183,8 @@ public class FrameToCrop extends JFrame{
 		this.cropNegatives();
 		if (this.quantidadeLote>1 && (this.listaArquivos.size())%this.quantidadeRepeticao == 0){
 			this.realizarAcoesLote();
+			this.gravarArquivos();
+			System.out.println("O programa será finalizado");
 			this.dispose();
 			return;
 		} else{
@@ -161,6 +198,8 @@ public class FrameToCrop extends JFrame{
 			this.qtdPositiva++;
 			BufferedImage imagemPositiva = this.imagem.getSubimage(this.x1, this.y1, this.x2 - this.x1, this.y2 - this.y1);
 			ImageIO.write(imagemPositiva, "bmp", new File("./Positivas/P"+this.qtdPositiva+".bmp"));
+			this.arquivoPositivas.add("Positivas/P"+this.qtdPositiva+".bmp "+
+			                         "1 0 0 "+(imagemPositiva.getWidth()-1)+" "+ (imagemPositiva.getHeight()-1));
 			System.out.println("Imagem P"+this.qtdPositiva+".bmp salva com sucesso");
 		} catch (IOException e) {
 			System.out.println("Erro ao salvar a imagem P"+this.indiceArquivo+".bmp");
@@ -179,6 +218,7 @@ public class FrameToCrop extends JFrame{
 				this.qtdNegativa++;
 				BufferedImage imagemNegativa = this.imagem.getSubimage(this.x1, this.y1, this.x2 - this.x1, this.y2 - this.y1);
 				ImageIO.write(imagemNegativa, "bmp", new File("./Negativas/N"+this.qtdNegativa+".bmp"));
+				this.arquivoNegativas.add("Negativas/N"+this.qtdNegativa+".bmp");
 				System.out.println("Imagem N"+this.qtdNegativa+".bmp salva com sucesso");
 			}
 		} catch (IOException e) {
@@ -219,18 +259,19 @@ public class FrameToCrop extends JFrame{
 	  if (this.y2>this.imagem.getHeight()){
 		  this.y2=this.imagem.getHeight()-9;  
 	  }
-	  
-	  if (this.x1>this.x2){
-	    troca = this.x2;
-	    this.x2 = this.x1;
-	    this.x1 = troca; 
+
+     if (this.x1>this.x2){
+		  troca = this.x1;
+		  this.x1 = this.x2;
+		  this.x2 = troca;
 	  }
-	  	   
+     
 	  if (this.y1>this.y2){
-	    troca = this.y2;
-		this.y2 = this.y1;
-		this.y1 = troca; 
-	  }	 
+		  troca = this.y1;
+		  this.y1 = this.y2;
+		  this.y2 = troca;
+	  }
+	  	    
 	}
 	
 	public void paintBlack(){
@@ -247,7 +288,7 @@ public class FrameToCrop extends JFrame{
 	private void clickBtAddPositiva(){
 		this.cropAndSave();
 		this.paintBlack();
-		this.evento.getListaPositivos().add(new Quadrado(this.x1, this.x2,this.y1,this.y2));
+		this.evento.getListaPositivos().add(new Quadrado(this.x1,this.x2,this.y1,this.y2));
 	}
 
     
@@ -263,13 +304,21 @@ public class FrameToCrop extends JFrame{
 	}
 	
 	private void lbImagemMouseClicked(java.awt.event.MouseEvent evt){
-      if (evt.isShiftDown()){
+      if (!evt.isShiftDown()){
         this.x1 = evt.getX();
         this.y1 = evt.getY();			
       } else {
         this.x2 = evt.getX();
         this.y2 = evt.getY();
       }
+      this.desenharQuadrado();
+	}
+	
+	public void desenharQuadrado(){
+        this.corrigirVariaveis();
+        this.logo = new ImageIcon(this.imagem.getSubimage(this.x1, this.y1, this.x2-this.x1, this.y2-this.y1));
+	    this.lbImagemAux.setIcon(this.logo);
+	    this.lbImagemAux.setText("x1 = "+this.x1+"; y1= "+this.y1+"; x2 = "+this.x2+"; y2 = "+this.y2); 
 	}
 	
 	public void abrirImagem(){
@@ -288,9 +337,10 @@ public class FrameToCrop extends JFrame{
 		}
 		try{
 			this.lbImagem.setText("");
+			this.lbImagem.setLocation(new Point(0,0));
 			this.imagem = ImageIO.read(new File(this.listaArquivos.get(0)));
 			this.logo = new ImageIcon(this.imagem);
-			this.setSize(((this.imagem.getHeight())>550)?(this.imagem.getHeight()):550,this.imagem.getWidth());
+			this.setSize(((this.imagem.getWidth())>550)?(this.imagem.getWidth()):550,this.logo.getIconHeight()*2+100);
 			if (this.logo == null){
 				System.out.println("(NULL) Erro na imagem "+(this.indiceArquivo-1)+": "+this.listaArquivos.get(0)); 
 				this.lbImagem.setText("Erro na Imagem");
