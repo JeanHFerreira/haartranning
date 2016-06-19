@@ -2,6 +2,7 @@ set objFSO = CreateObject("Scripting.FileSystemObject")
 pastaBackup = "Backup"
 positivaOriginal = "Positivas"
 negativaOriginal = "Negativas"
+cascadeOriginal = "Cascades"
 vectorVec = "vector.vec"
 positivaTxt = "positivas.txt"
 negativaTxt = "negativas.txt"
@@ -13,6 +14,9 @@ if objFSO.FolderExists(positivaOriginal)=false then
 end if
 if objFSO.FolderExists(negativaOriginal)=false then
   objFSO.CreateFolder negativaOriginal
+end if
+if objFSO.FolderExists(cascadeOriginal)=false then
+  objFSO.CreateFolder cascadeOriginal
 end if
 dNow = Now
 ano = Right(Year(dNow),4)
@@ -29,6 +33,7 @@ objFSO.CreateFolder novaPositiva
 objFSO.CreateFolder novaNegativa
 objFSO.CopyFolder positivaOriginal,novaPasta,true
 objFSO.CopyFolder negativaOriginal,novaPasta,true
+objFSO.CopyFolder cascadeOriginal,novaPasta,true
 if objFSO.FileExists(vectorVec)=true then
   novoVec = novaPasta & "\" & novoVec
   objFSO.CopyFile vectorVec, novoVec, true 
