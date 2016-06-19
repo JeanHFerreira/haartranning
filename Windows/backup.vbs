@@ -6,6 +6,7 @@ cascadeOriginal = "Cascades"
 vectorVec = "vector.vec"
 positivaTxt = "positivas.txt"
 negativaTxt = "negativas.txt"
+haarXML = "newHaarcascade.xml"
 if objFSO.FolderExists(pastaBackup)=false then
   objFSO.CreateFolder pastaBackup
 end if
@@ -45,4 +46,8 @@ end if
 if objFSO.FileExists(negativaTxt)=true then
   novoNegativaTxt = novaPasta & "\" & negativaTxt
   objFSO.CopyFile negativaTxt, novoNegativaTxt, true 
+end if
+if objFSO.FileExists(haarXML)=true then
+  novoHaarXML = novaPasta & "\" & haarXML
+  objFSO.CopyFile haarXML, novoHaarXML, true 
 end if
